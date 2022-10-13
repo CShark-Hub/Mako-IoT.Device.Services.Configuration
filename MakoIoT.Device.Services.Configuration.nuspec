@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>MakoIoT.Device.Services.Configuration</id>
+    <version>$version$</version>
+    <title>MakoIoT.Device.Services.Configuration</title>
+    <authors>CSHARK</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="file">LICENSE.md</license>
+    <releaseNotes>
+    </releaseNotes>
+    <readme>docs\README.md</readme>
+    <developmentDependency>false</developmentDependency>
+    <projectUrl>https://github.com/CShark-Hub/Mako-IoT.Device.Services.Configuration</projectUrl>
+    <repository type="git" url="https://github.com/CShark-Hub/Mako-IoT.Device.Services.Configuration" />
+    <copyright>Copyright (c) CSHARK Sp. z o. o.</copyright>
+    <description>MAKO-IoT configuration library.</description>
+    <tags>nanoFramework C# csharp netmf netnf mako-iot configuration</tags>
+    <dependencies>
+      <dependency id="nanoFramework.CoreLibrary" version="1.12.0" />
+      <dependency id="nanoFramework.System.Collections" version="1.4.0" />
+      <dependency id="nanoFramework.System.Text" version="1.2.7" />
+      <dependency id="nanoFramework.System.IO.Streams" version="1.1.15" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="src\MakoIoT.Device.Services.Configuration\bin\Release\MakoIoT.Device.Services.Configuration.dll" target="lib\MakoIoT.Device.Services.Configuration.dll" />
+    <file src="src\MakoIoT.Device.Services.Configuration\bin\Release\MakoIoT.Device.Services.Configuration.pdb" target="lib\MakoIoT.Device.Services.Configuration.pdb" />
+    <file src="src\MakoIoT.Device.Services.Configuration\bin\Release\MakoIoT.Device.Services.Configuration.pdbx" target="lib\MakoIoT.Device.Services.Configuration.pdbx" />
+    <file src="src\MakoIoT.Device.Services.Configuration\bin\Release\MakoIoT.Device.Services.Configuration.pe" target="lib\MakoIoT.Device.Services.Configuration.pe" />
+    <file src="README.md" target="docs\" />
+    <file src="LICENSE.md" target="" />
+  </files>
+</package>
