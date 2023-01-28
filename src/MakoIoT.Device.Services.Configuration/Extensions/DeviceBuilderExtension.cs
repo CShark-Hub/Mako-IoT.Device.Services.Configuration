@@ -1,5 +1,5 @@
-﻿using MakoIoT.Device.Services.DependencyInjection;
-using MakoIoT.Device.Services.Interface;
+﻿using MakoIoT.Device.Services.Interface;
+using nanoFramework.DependencyInjection;
 
 namespace MakoIoT.Device.Services.Configuration.Extensions
 {
@@ -12,7 +12,7 @@ namespace MakoIoT.Device.Services.Configuration.Extensions
 
         public static IDeviceBuilder AddConfiguration(this IDeviceBuilder builder, ConfigureDefaultsDelegate configureDefaultsAction)
         {
-            DI.RegisterSingleton(typeof(IConfigurationService), typeof(ConfigurationService));
+            builder.Services.AddSingleton(typeof(IConfigurationService), typeof(ConfigurationService));
             builder.ConfigureDefaultsAction = configureDefaultsAction;
             return builder;
         }
