@@ -1,4 +1,5 @@
-# Project readme
+# Mako-IoT.Device.Services.Configuration
+Provides easy way of reading and updating configuration settings with strongly-typed objects.
 
 ## How to manually sync fork
 - Clone repository and navigate into folder
