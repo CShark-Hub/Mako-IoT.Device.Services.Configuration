@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using MakoIoT.Device.Services.Configuration.Test.Mocks;
 using MakoIoT.Device.Services.Interface;
-using nanoFramework.Logging.Debug;
 using nanoFramework.TestFramework;
 
 namespace MakoIoT.Device.Services.Configuration.Test
@@ -13,7 +11,7 @@ namespace MakoIoT.Device.Services.Configuration.Test
         [TestMethod]
         public void GetConfigSection_given_NoFile_ConfigClassWithNoDefault_should_throw_ConfigurationException()
         {
-            var sut = new ConfigurationService(new MockStorage(), new DebugLogger(nameof(ConfigurationServiceTest)));
+            var sut = new ConfigurationService(new MockStorage(), new MockLogger());
 
             Assert.ThrowsException(typeof(ConfigurationException),
                 () => sut.GetConfigSection("", typeof(TestConfigWithNoDefault)));

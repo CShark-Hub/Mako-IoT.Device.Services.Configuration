@@ -1,11 +1,11 @@
-﻿using System;
+﻿using MakoIoT.Device.Services.Interface;
+using System;
 using System.Collections;
 using System.Reflection;
-using Microsoft.Extensions.Logging;
 
 namespace MakoIoT.Device.Services.Configuration.Test.Mocks
 {
-    public class MockLogger : ILogger
+    public class MockLogger : ILog
     {
         private readonly ArrayList[] _messages;
 
@@ -18,35 +18,118 @@ namespace MakoIoT.Device.Services.Configuration.Test.Mocks
             }
         }
 
-        public void Log(LogLevel logLevel, EventId eventId, string state, Exception exception, MethodInfo format)
+        private void Log(LogEventLevel logLevel, string state)
         {
             _messages[(int)logLevel].Add(state);
         }
 
-        public bool IsEnabled(LogLevel logLevel) => true;
-
-        public ArrayList GetMessages(LogLevel logLevel)
+        public ArrayList GetMessages(LogEventLevel logLevel)
         {
             return _messages[(int)logLevel];
         }
 
-        public ArrayList GetAllMessages()
-        {
-            var l = new ArrayList();
-            foreach (var message in _messages)
-            {
-                foreach (var m in message)
-                {
-                    l.Add(m);
-                }
-            }
 
-            return l;
+        public void Trace(Exception exception, string message, MethodInfo format)
+        {
+            Log(LogEventLevel.Trace, message);
         }
 
-        public bool HasErrors => GetMessages(LogLevel.Error).Count > 0;
+        public void Trace(Exception exception, string message)
+        {
+            Log(LogEventLevel.Trace, message);
+        }
+
+        public void Trace(string message)
+        {
+            Log(LogEventLevel.Trace, message);
+        }
+
+        public void Trace(Exception exception)
+        {
+            Log(LogEventLevel.Trace, exception.ToString());
+        }
+
+        public void Information(Exception exception, string message, MethodInfo format)
+        {
+            Log(LogEventLevel.Information, message);
+        }
+
+        public void Information(Exception exception, string message)
+        {
+            Log(LogEventLevel.Information, message);
+        }
+
+        public void Information(string message)
+        {
+            Log(LogEventLevel.Information, message);
+        }
+
+        public void Information(Exception exception)
+        {
+            Log(LogEventLevel.Information, exception.ToString());
+        }
+
+        public void Warning(Exception exception, string message, MethodInfo format)
+        {
+            Log(LogEventLevel.Warning, message);
+        }
+
+        public void Warning(Exception exception, string message)
+        {
+            Log(LogEventLevel.Warning, message);
+        }
+
+        public void Warning(string message)
+        {
+            Log(LogEventLevel.Warning, message);
+        }
+
+        public void Warning(Exception exception)
+        {
+            Log(LogEventLevel.Warning, exception.ToString());
+        }
+
+        public void Error(Exception exception, string message, MethodInfo format)
+        {
+            Log(LogEventLevel.Error, message);
+        }
+
+        public void Error(string message, Exception exception)
+        {
+            Log(LogEventLevel.Error, message);
+        }
+
+        public void Error(string message)
+        {
+            Log(LogEventLevel.Error, message);
+        }
+
+        public void Error(Exception exception)
+        {
+            Log(LogEventLevel.Error, exception.ToString());
+        }
+
+        public void Critical(Exception exception, string message, MethodInfo format)
+        {
+            Log(LogEventLevel.Critical, message);
+        }
+
+        public void Critical(Exception exception, string message)
+        {
+            Log(LogEventLevel.Critical, message);
+        }
+
+        public void Critical(string message)
+        {
+            Log(LogEventLevel.Critical, message);
+        }
+
+        public void Critical(Exception exception)
+        {
+            Log(LogEventLevel.Critical, exception.Message);
+        }
 
         public bool HasWarningsOrErrors =>
-            GetMessages(LogLevel.Error).Count > 0 || GetMessages(LogLevel.Warning).Count > 0;
+            GetMessages(LogEventLevel.Error).Count > 0 || GetMessages(LogEventLevel.Warning).Count > 0;
     }
 }
