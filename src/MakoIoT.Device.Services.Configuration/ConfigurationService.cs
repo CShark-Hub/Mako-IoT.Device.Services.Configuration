@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Reflection;
 using MakoIoT.Device.Services.Interface;
-using Microsoft.Extensions.Logging;
 using nanoFramework.Json;
 
 namespace MakoIoT.Device.Services.Configuration
@@ -10,13 +9,13 @@ namespace MakoIoT.Device.Services.Configuration
     public class ConfigurationService : IConfigurationService
     {
         private readonly IStorageService _storage;
-        private readonly ILogger _logger;
+        private readonly ILog _logger;
         private string _configString;
         private readonly object _writeLock = new object();
 
         public event EventHandler ConfigurationUpdated;
 
-        public ConfigurationService(IStorageService storage, ILogger logger)
+        public ConfigurationService(IStorageService storage, ILog logger)
         {
             _storage = storage;
             _logger = logger;
@@ -34,14 +33,14 @@ namespace MakoIoT.Device.Services.Configuration
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, $"Error in config section {sectionName}", e);
+                    _logger.Error($"Error in config section {sectionName}", e);
                 }
             }
 
             var defaultProp = objectType.GetMethod("get_Default", BindingFlags.Public | BindingFlags.Static);
             if (defaultProp != null)
             {
-                _logger.LogInformation($"Using default config for section {sectionName}");
+                _logger.Information($"Using default config for section {sectionName}");
                 return defaultProp.Invoke(null, null);
             }
 
@@ -76,7 +75,7 @@ namespace MakoIoT.Device.Services.Configuration
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in config section {sectionName} - config not updated", e);
+                _logger.Error($"Error in config section {sectionName} - config not updated", e);
                 return false;
             }
             if (SaveConfigSection(sectionString, sectionName))
@@ -117,7 +116,7 @@ namespace MakoIoT.Device.Services.Configuration
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, "Error loading config from file", e);
+                    _logger.Error("Error loading config from file", e);
                 }
             }
             return null;
@@ -131,14 +130,14 @@ namespace MakoIoT.Device.Services.Configuration
             {
                 if (IsConfigFile(file))
                 {
-                    _logger.LogTrace($"Deleting file {file}...");
+                    _logger.Trace($"Deleting file {file}...");
                     try
                     {
                         _storage.DeleteFile(file);
                     }
                     catch (Exception e)
                     {
-                        _logger.LogError(e, $"Error deleting config file {file}", e);
+                        _logger.Error($"Error deleting config file {file}", e);
                         result = false;
                     }
                 }
@@ -155,14 +154,14 @@ namespace MakoIoT.Device.Services.Configuration
                 lock (_writeLock)
                 {
                     _storage.WriteToFile(fileName, config);
-                    _logger.LogDebug($"Config section {sectionName} updated.");
+                    _logger.Trace($"Config section {sectionName} updated.");
                 }
 
                 return true;
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error saving config to file", e);
+                _logger.Error("Error saving config to file", e);
             }
 
             return false;
