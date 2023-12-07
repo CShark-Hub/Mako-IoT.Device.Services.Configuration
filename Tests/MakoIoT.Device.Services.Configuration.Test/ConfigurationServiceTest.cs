@@ -38,6 +38,39 @@ namespace MakoIoT.Device.Services.Configuration.Test
         }
 
         [TestMethod]
+        public void TryGetConfigSection_given_NoFile_should_return_false()
+        {
+            var sut = new ConfigurationService(new MockStorage(), new MockLogger());
+
+            var result = sut.TryGetConfigSection("", typeof(TestConfigWithNoDefault), out _);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void TryGetConfigSection_given_file_should_return_deserialized_object_and_true()
+        {
+            var logger = new MockLogger();
+            var storage = new MockStorage
+            {
+                FileName = $"mako-{TestConfigWithNoDefault.SectionName}.cfg".ToLower(),
+                Text = "{\"Setting2\":5,\"Setting1\":\"Value1\"}"
+            };
+            var sut = new ConfigurationService(storage, logger);
+
+            var result = sut.TryGetConfigSection(TestConfigWithNoDefault.SectionName, typeof(TestConfigWithNoDefault), out var section);
+
+            Assert.IsTrue(result);
+
+            var configSection = section as TestConfigWithNoDefault;
+            Assert.IsNotNull(configSection);
+
+            Assert.AreEqual("Value1", configSection.Setting1);
+            Assert.AreEqual(5, configSection.Setting2);
+            Assert.IsFalse(logger.HasWarningsOrErrors);
+        }
+
+        [TestMethod]
         public void UpdateConfigSection_should_call_WriteToFile_with_serialized_section_and_fileName()
         {
             var logger = new MockLogger();

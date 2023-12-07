@@ -47,6 +47,26 @@ namespace MakoIoT.Device.Services.Configuration
             throw new ConfigurationException("Can't load configuration nor default");
         }
 
+        public bool TryGetConfigSection(string sectionName, Type objectType, out object section)
+        {
+            section = null;
+            string sectionStr = LoadConfigSection(sectionName);
+
+            if (sectionStr == null)
+                return false;
+
+            try
+            {
+                section = JsonConvert.DeserializeObject(sectionStr, objectType);
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"Error in config section {sectionName}", e);
+                return false;
+            }
+        }
+
         public void UpdateConfigSection(string sectionName, object section)
         {
             string sectionStr = JsonConvert.SerializeObject(section);
