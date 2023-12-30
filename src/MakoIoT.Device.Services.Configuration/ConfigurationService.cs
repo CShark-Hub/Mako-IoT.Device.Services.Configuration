@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Reflection;
 using MakoIoT.Device.Services.Interface;
 using nanoFramework.Json;
 
@@ -10,7 +9,6 @@ namespace MakoIoT.Device.Services.Configuration
     {
         private readonly IStorageService _storage;
         private readonly ILog _logger;
-        private string _configString;
         private readonly object _writeLock = new object();
 
         public event EventHandler ConfigurationUpdated;
@@ -23,33 +21,42 @@ namespace MakoIoT.Device.Services.Configuration
 
         public object GetConfigSection(string sectionName, Type objectType)
         {
-            string sectionStr = LoadConfigSection(sectionName);
+            var sectionStr = LoadConfigSection(sectionName);
 
-            if (sectionStr != null)
+            if (sectionStr == null)
             {
-                try
-                {
-                    return JsonConvert.DeserializeObject(sectionStr, objectType);
-                }
-                catch (Exception e)
-                {
-                    _logger.Error($"Error in config section {sectionName}", e);
-                }
+                throw new ConfigurationException("Can't load configuration. Section string is null.");
             }
-
-            var defaultProp = objectType.GetMethod("get_Default", BindingFlags.Public | BindingFlags.Static);
-            if (defaultProp != null)
+            
+            try
             {
-                _logger.Information($"Using default config for section {sectionName}");
-                return defaultProp.Invoke(null, null);
+                return JsonConvert.DeserializeObject(sectionStr, objectType);
             }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+                throw new ConfigurationException("Can't load configuration");
+            }
+        }
 
-            throw new ConfigurationException("Can't load configuration nor default");
+        public bool TryGetConfigSection(string sectionName, Type objectType, out object section)
+        {
+            try
+            {
+                section = GetConfigSection(sectionName, objectType);
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+                section = null;
+                return false;
+            }
         }
 
         public void UpdateConfigSection(string sectionName, object section)
         {
-            string sectionStr = JsonConvert.SerializeObject(section);
+            var sectionStr = JsonConvert.SerializeObject(section);
             if (SaveConfigSection(sectionStr, sectionName))
             {
                 ConfigurationUpdated?.Invoke(this, new ObjectEventArgs(sectionName));
@@ -58,7 +65,7 @@ namespace MakoIoT.Device.Services.Configuration
 
         public bool UpdateConfigSectionString(string sectionName, string sectionString)
         {
-            bool result = SaveConfigSection(sectionString, sectionName);
+            var result = SaveConfigSection(sectionString, sectionName);
             if (result)
             {
                 ConfigurationUpdated?.Invoke(this, new ObjectEventArgs(sectionName));
@@ -106,19 +113,21 @@ namespace MakoIoT.Device.Services.Configuration
 
         public string LoadConfigSection(string sectionName)
         {
-            string fileName = GetConfigFileName(sectionName);
-            if (_storage.FileExists(fileName))
+            var fileName = GetConfigFileName(sectionName);
+            if (!_storage.FileExists(fileName))
             {
-                try
-                {
-                    _configString = _storage.ReadFile(fileName);
-                    return _configString;
-                }
-                catch (Exception e)
-                {
-                    _logger.Error("Error loading config from file", e);
-                }
+                return null;
             }
+            
+            try
+            {
+                return _storage.ReadFile(fileName);
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Error loading config from file", e);
+            }
+            
             return null;
         }
 
@@ -148,7 +157,7 @@ namespace MakoIoT.Device.Services.Configuration
 
         private bool SaveConfigSection(string config, string sectionName)
         {
-            string fileName = GetConfigFileName(sectionName);
+            var fileName = GetConfigFileName(sectionName);
             try
             {
                 lock (_writeLock)
