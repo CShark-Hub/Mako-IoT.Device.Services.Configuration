@@ -71,6 +71,11 @@ namespace MakoIoT.Device.Services.Configuration.Test.Mocks
             throw new NotImplementedException();
         }
 
+        public long GetFileSize(string fileName)
+        {
+            throw new NotImplementedException();
+        }
+
         public string[] GetFiles(string directoryName)
         {
             throw new NotImplementedException();

@@ -17,7 +17,7 @@
     <description>MAKO-IoT configuration library.</description>
     <tags>nanoFramework C# csharp netmf netnf mako-iot configuration</tags>
     <dependencies>
-      <dependency id="MakoIoT.Device.Services.Interface" version="1.0.55.11594" />
+      <dependency id="MakoIoT.Device.Services.Interface" version="1.0.56.42770" />
       <dependency id="nanoFramework.CoreLibrary" version="1.17.11" />
       <dependency id="nanoFramework.System.Collections" version="1.5.67" />
       <dependency id="nanoFramework.System.IO.Streams" version="1.1.96" />
